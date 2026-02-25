@@ -1,8 +1,9 @@
 function App() {
   return (
-    <div>
-      <h1>Mi App React</h1>
-      <p>Frontend inicial</p>
+    <div className="min-h-screen flex items-center justify-center bg-red-500">
+      <h1 className="text-5xl font-extrabold text-white">
+        TAILWIND ACTIVO
+      </h1>
     </div>
   );
 }
