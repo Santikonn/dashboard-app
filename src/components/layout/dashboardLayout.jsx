@@ -2,6 +2,7 @@ import Sidebar from "./sidebar";
 import Header from "../header/header";
 import { useState } from "react";
 import MaturityDashboard from "../../pages/MaturityDashboard";
+import WfmDashboard from "../../pages/WfmDashboard";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(false);
@@ -16,6 +17,7 @@ export default function DashboardLayout() {
         <Header />
         <main className="p-6">
           {activeItem === "maturity" &&  <MaturityDashboard />}
+          {activeItem === "workforce" &&  <WfmDashboard />}
         </main>
       </div>
     </div>
