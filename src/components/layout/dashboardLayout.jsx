@@ -14,7 +14,7 @@ export default function DashboardLayout() {
 
       <div className={`flex flex-col min-h-screen transition-all duration-300 ${
         collapsed ? "ml-[72px]" : "ml-[256px]"}`}>
-        <Header />
+        {/* <Header /> */}
         <main className="p-6">
           {activeItem === "maturity" &&  <MaturityDashboard />}
           {activeItem === "workforce" &&  <WfmDashboard />}

@@ -57,11 +57,31 @@ const WfmDashboard = () => {
   const leaders = useMemo(() => buildLeaders(filteredAgents), [filteredAgents]);
   const kpis = useMemo(() => buildKPIs(filteredAgents), [filteredAgents]);
 
+  // 🔥 LAST UPDATE (date + segment_end)
+  const lastUpdate = useMemo(() => {
+    if (!agents.length) return null;
+
+    const maxDate = agents.reduce((max, a) => {
+      return a.date > max ? a.date : max;
+    }, agents[0].date);
+
+    const sameDate = agents.filter((a) => a.date === maxDate);
+
+    const maxSegment = sameDate.reduce((max, a) => {
+      return a.segment_end > max ? a.segment_end : max;
+    }, sameDate[0].segment_end);
+
+    return {
+      date: maxDate,
+      time: maxSegment,
+    };
+  }, [agents]);
+
   // 🔥 UNIQUE HELPER
   const unique = (arr) =>
     [...new Set(arr.map((v) => v || "Unknown"))].sort();
 
-  // ✅ OPCIONES CORRECTAS (NO USAR filteredAgents)
+  // 🔥 OPCIONES (SIEMPRE DESDE DATA ORIGINAL)
   const options = useMemo(() => {
     return {
       leader: unique(agents.map((a) => a.leader)),
@@ -75,21 +95,34 @@ const WfmDashboard = () => {
     <div className="bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto space-y-4">
 
-        {/* HEADER */}
-        <div className="relative flex items-center mb-4">
+        {/* 🔥 HEADER */}
+        <div className="relative flex flex-col items-center mb-4">
+
+          {/* LOGO IZQ */}
           <img
             src="/LogoKonnectCX.png"
             alt="Konnectcx"
-            className="h-12 mr-4"
+            className="h-12 absolute left-0"
           />
-          <h1 className="absolute left-1/2 -translate-x-1/2 text-3xl font-bold">
-            Real Time Report
-          </h1>          
+
+          {/* LOGO DER */}
           <img
             src="/LogoElevate.png"
             alt="Elevate"
-            className="h-10 mr-4 absolute right-0"
+            className="h-10 absolute right-0"
           />
+
+          {/* TITULO */}
+          <h1 className="text-3xl font-bold">
+            Real Time Report
+          </h1>
+
+          {/* 🔥 LAST UPDATE */}
+          {lastUpdate && (
+            <p className="text-xs text-slate-500 mt-1">
+              LAST UPDATE - {lastUpdate.date} {lastUpdate.time} EST
+            </p>
+          )}
         </div>
 
         <div className="space-y-4">
