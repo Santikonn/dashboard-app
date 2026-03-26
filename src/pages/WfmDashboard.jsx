@@ -7,7 +7,6 @@ import { buildLeaders, buildKPIs } from "../data/wfmUtils";
 const WfmDashboard = () => {
   const [agents, setAgents] = useState([]);
 
-  // 🔥 FILTROS MULTISELECT
   const [filters, setFilters] = useState({
     leader: [],
     agent: [],
@@ -15,13 +14,12 @@ const WfmDashboard = () => {
     expected: [],
   });
 
-  // 🔥 FETCH DATA (solo una vez)
+  // 🔥 FETCH
   useEffect(() => {
     fetch("https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence")
       .then((res) => res.json())
       .then((data) => {
-        const agentsData = data.items || [];
-        setAgents(agentsData);
+        setAgents(data.items || []);
       })
       .catch((err) => console.error(err));
   }, []);
@@ -29,47 +27,33 @@ const WfmDashboard = () => {
   // 🔥 FILTRADO
   const filteredAgents = useMemo(() => {
     return agents.filter((a) => {
-      if (
-        filters.leader.length &&
-        !filters.leader.includes(a.leader || "Unknown")
-      ) return false;
-
-      if (
-        filters.agent.length &&
-        !filters.agent.includes(a.agent_name || "Unknown")
-      ) return false;
-
-      if (
-        filters.actual.length &&
-        !filters.actual.includes(a.real_status || "Unknown")
-      ) return false;
-
-      if (
-        filters.expected.length &&
-        !filters.expected.includes(a.scheduled_activity || "Unknown")
-      ) return false;
-
+      if (filters.leader.length && !filters.leader.includes(a.leader || "Unknown")) return false;
+      if (filters.agent.length && !filters.agent.includes(a.agent_name || "Unknown")) return false;
+      if (filters.actual.length && !filters.actual.includes(a.real_status || "Unknown")) return false;
+      if (filters.expected.length && !filters.expected.includes(a.scheduled_activity || "Unknown")) return false;
       return true;
     });
   }, [agents, filters]);
 
-  // 🔥 BUILD DATA
+  // 🔥 DATA
   const leaders = useMemo(() => buildLeaders(filteredAgents), [filteredAgents]);
   const kpis = useMemo(() => buildKPIs(filteredAgents), [filteredAgents]);
 
-  // 🔥 LAST UPDATE (date + segment_end)
+  // 🔥 LAST UPDATE
   const lastUpdate = useMemo(() => {
     if (!agents.length) return null;
 
-    const maxDate = agents.reduce((max, a) => {
-      return a.date > max ? a.date : max;
-    }, agents[0].date);
+    const maxDate = agents.reduce((max, a) =>
+      a.date > max ? a.date : max,
+      agents[0].date
+    );
 
     const sameDate = agents.filter((a) => a.date === maxDate);
 
-    const maxSegment = sameDate.reduce((max, a) => {
-      return a.segment_end > max ? a.segment_end : max;
-    }, sameDate[0].segment_end);
+    const maxSegment = sameDate.reduce((max, a) =>
+      a.segment_end > max ? a.segment_end : max,
+      sameDate[0].segment_end
+    );
 
     return {
       date: maxDate,
@@ -77,11 +61,10 @@ const WfmDashboard = () => {
     };
   }, [agents]);
 
-  // 🔥 UNIQUE HELPER
+  // 🔥 OPTIONS
   const unique = (arr) =>
     [...new Set(arr.map((v) => v || "Unknown"))].sort();
 
-  // 🔥 OPCIONES (SIEMPRE DESDE DATA ORIGINAL)
   const options = useMemo(() => {
     return {
       leader: unique(agents.map((a) => a.leader)),
@@ -92,52 +75,60 @@ const WfmDashboard = () => {
   }, [agents]);
 
   return (
-    <div className="bg-slate-50 min-h-screen">
+    <div className="bg-slate-50 min-h-screen px-2 sm:px-4 py-3">
+      
       <div className="max-w-7xl mx-auto space-y-4">
 
-        {/* 🔥 HEADER */}
-        <div className="relative flex flex-col items-center mb-4">
+        {/* 🔥 HEADER RESPONSIVE CORRECTO */}
+        <div className="flex flex-col items-center gap-2 text-center relative">
 
-          {/* LOGO IZQ */}
-          <img
-            src="/LogoKonnectCX.png"
-            alt="Konnectcx"
-            className="h-12 absolute left-0"
-          />
+          {/* 🔹 MOBILE → logos arriba */}
+          <div className="flex w-full justify-between items-center sm:hidden">
+            <img src="/LogoKonnectCX.png" alt="Konnectcx" className="h-8" />
+            <img src="/LogoElevate.png" alt="Elevate" className="h-6" />
+          </div>
 
-          {/* LOGO DER */}
-          <img
-            src="/LogoElevate.png"
-            alt="Elevate"
-            className="h-10 absolute right-0"
-          />
+          {/* 🔹 DESKTOP → logos a los lados */}
+          <div className="hidden sm:flex w-full items-center justify-between absolute top-0 left-0 px-2">
+            <img src="/LogoKonnectCX.png" alt="Konnectcx" className="h-10 md:h-12" />
+            <img src="/LogoElevate.png" alt="Elevate" className="h-8 md:h-10" />
+          </div>
 
-          {/* TITULO */}
-          <h1 className="text-3xl font-bold">
+          {/* 🔹 TITLE */}
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-bold">
             Real Time Report
           </h1>
 
-          {/* 🔥 LAST UPDATE */}
+          {/* 🔹 LAST UPDATE */}
           {lastUpdate && (
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-[10px] sm:text-xs text-slate-500">
               LAST UPDATE - {lastUpdate.date} {lastUpdate.time} EST
             </p>
           )}
         </div>
 
+        {/* 🔥 CONTENT */}
         <div className="space-y-4">
 
-          {/* 🔥 FILTROS */}
+          {/* FILTROS */}
           <FiltersPanel
             filters={filters}
             setFilters={setFilters}
             options={options}
           />
 
-          {/* 🔥 KPI CARDS */}
+          {/* 🔥 KPI RESPONSIVE PRO */}
           {kpis && (
-            <div className="grid grid-cols-6 gap-4">
+            <div className="
+              grid 
+              grid-cols-2 
+              sm:grid-cols-3 
+              md:grid-cols-4 
+              lg:grid-cols-7 
+              gap-3
+            ">
               <KPICard title="Expected Agents" value={kpis.expected} />
+              <KPICard title="Compliance" value={kpis.compliance} />
               <KPICard title="On Call" value={kpis.connected} variant="success" />
               <KPICard title="Absent" value={kpis.absent} variant="danger" />
               <KPICard title="Lunch/Break" value={kpis.LunchBreak} variant="warning" />
@@ -146,7 +137,7 @@ const WfmDashboard = () => {
             </div>
           )}
 
-          {/* 🔥 TABLA */}
+          {/* TABLA */}
           <WFMTable data={leaders} />
 
         </div>

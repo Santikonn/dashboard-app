@@ -21,7 +21,19 @@ const FiltersPanel = ({ filters, setFilters, options }) => {
 
   return (
     <div className="bg-white border rounded-2xl p-4 shadow-sm">
-      <div className="flex flex-wrap items-end gap-4 overflow-visible">
+      
+      <div
+        className="
+          grid 
+          grid-cols-1 
+          sm:grid-cols-2 
+          md:grid-cols-2 
+          lg:grid-cols-4 
+          xl:grid-cols-5
+          gap-4
+          items-end
+        "
+      >
 
         <FilterDropdown
           label="Leader"
@@ -51,17 +63,20 @@ const FiltersPanel = ({ filters, setFilters, options }) => {
           onChange={(val) => updateFilter("expected", val)}
         />
 
-        {/* 🔥 RESET BUTTON */}
+        {/* RESET */}
         <button
           onClick={resetFilters}
           className="
-            flex items-center gap-2
-            px-4 py-2
+            w-full
+            h-[36px]
+            flex items-center justify-center gap-2
             text-xs
             bg-slate-100
             hover:bg-slate-200
             rounded-xl
             transition
+            md:col-span-2
+            lg:col-span-1
           "
         >
           <RotateCcw className="w-4 h-4" />

@@ -26,14 +26,16 @@ const FilterDropdown = ({ label, options, selected = [], onChange }) => {
   }, []);
 
   return (
-    <div className="relative w-[192px]" ref={ref}>
-      
-      {/* 🔹 LABEL */}
-      <label className="text-xs text-slate-500 mb-1 block">
+    <div
+      ref={ref}
+      className="relative w-full sm:w-[180px] md:w-[200px]"
+    >
+      {/* LABEL */}
+      <label className="text-[10px] md:text-xs text-slate-500 mb-1 block">
         {label}
       </label>
 
-      {/* 🔹 BUTTON (FIXED SIZE) */}
+      {/* BUTTON */}
       <button
         onClick={() => setOpen(!open)}
         className="
@@ -42,7 +44,7 @@ const FilterDropdown = ({ label, options, selected = [], onChange }) => {
           border
           rounded-xl
           px-3
-          text-xs
+          text-[11px] md:text-xs
           text-left
           bg-slate-50
           hover:bg-white
@@ -60,33 +62,48 @@ const FilterDropdown = ({ label, options, selected = [], onChange }) => {
         </span>
       </button>
 
-      {/* 🔹 DROPDOWN */}
+      {/* DROPDOWN */}
       {open && (
-        <div className="
-          absolute 
-          z-50 
-          mt-2 
-          w-full 
-          bg-white 
-          border 
-          rounded-xl 
-          shadow 
-          p-2 
-          max-h-60 
-          overflow-y-auto
-          text-xs
-        ">
+        <div
+          className="
+            absolute 
+            z-[999] 
+            mt-2 
+            w-full 
+            bg-white 
+            border 
+            rounded-xl 
+            shadow-lg
+            p-2 
+            max-h-60 
+            overflow-y-auto
+            text-xs
+          "
+        >
+          {options.length === 0 && (
+            <div className="text-slate-400 text-center py-2">
+              No options
+            </div>
+          )}
+
           {options.map((opt) => (
             <label
               key={opt}
-              className="flex items-center gap-2 p-1 text-sm hover:bg-slate-100 rounded cursor-pointer"
+              className="
+                flex items-center gap-2 
+                p-1 
+                text-xs md:text-sm 
+                hover:bg-slate-100 
+                rounded 
+                cursor-pointer
+              "
             >
               <input
                 type="checkbox"
                 checked={selected.includes(opt)}
                 onChange={() => toggleOption(opt)}
               />
-              {opt}
+              <span className="truncate">{opt}</span>
             </label>
           ))}
         </div>

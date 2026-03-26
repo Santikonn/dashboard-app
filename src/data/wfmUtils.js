@@ -132,6 +132,7 @@ export const buildLeaders = (agents) => {
 export const buildKPIs = (agents) => {
   const kpi = {
     expected: 0,
+    correct: 0,
     connected: 0,
     absent: 0,
     LunchBreak: 0,
@@ -141,6 +142,8 @@ export const buildKPIs = (agents) => {
 
   agents.forEach((a) => {
     kpi.expected += 1;
+
+    if (a.match === 1) kpi.correct += 1;
 
     const status = a.real_status;
 
@@ -156,6 +159,12 @@ export const buildKPIs = (agents) => {
       kpi.other += 1;
     }
   });
+  
+  const total = kpi.expected || 0;
+
+  kpi.compliance = total
+    ? ((kpi.correct / total) * 100).toFixed(1) + "%"
+    : 0 + "%";
 
   return kpi;
 };
