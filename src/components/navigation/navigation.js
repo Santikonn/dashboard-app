@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 export const navigation = [  
-  { key: "maturity", name: "Maturity & Health", icon: Target },
+  // { key: "maturity", name: "Maturity & Health", icon: Target },
   { key: "workforce", name: "Workforce Intelligence", icon: Users },
   // { key: "overview", name: "Overview", icon: LayoutDashboard },
   // { key: "operations", name: "Operational Analytics", icon: BarChart3 },

@@ -5,7 +5,7 @@ import WfmDashboard from "../../pages/wfmDashboard";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(true); // 🔥 estado único global
-  const [activeItem, setActiveItem] = useState("maturity");
+  const [activeItem, setActiveItem] = useState("workforce");
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,7 +27,7 @@ export default function DashboardLayout() {
         `}
       >
         <main className="p-3 sm:p-6">
-          {activeItem === "maturity" && <MaturityDashboard />}
+          {/* {activeItem === "maturity" && <MaturityDashboard />} */}
           {activeItem === "workforce" && <WfmDashboard />}
         </main>
       </div>

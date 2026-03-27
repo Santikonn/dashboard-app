@@ -35,7 +35,7 @@ const WFMTable = ({ data }) => {
               <th>Lunch/Break</th>
               <th>Class/Training</th>
               <th>Other</th>
-              <th>Expected</th>
+              <th>Expected Bucket</th>
             </tr>
           </thead>
 
@@ -120,7 +120,10 @@ const WFMTable = ({ data }) => {
                       <td>{agent.ClassTraining}</td>
                       <td>{agent.other}</td>
 
-                      <td>{agent.bucket}</td>
+                      <td style={{ color: agent.needs_review ? "red" : "inherit" }}>
+                        {agent.bucket}
+                      </td>
+                      
                     </tr>
                   ))}
               </React.Fragment>
