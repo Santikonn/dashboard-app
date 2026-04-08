@@ -17,7 +17,7 @@ const WFMTable = ({ data }) => {
     <div className="bg-white border rounded-2xl shadow-sm">
       
       {/* 🔥 SCROLL CONTAINER */}
-      <div className="max-h-[500px] overflow-auto">
+      <div className="max-h-[500px] overflow-auto scrollbar-none">
         
         <table className="w-full min-w-[900px] text-[10px] sm:text-xs text-center">
           

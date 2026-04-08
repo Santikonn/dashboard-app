@@ -2,10 +2,26 @@ import Sidebar from "./sidebar";
 import { useState } from "react";
 import MaturityDashboard from "../../pages/MaturityDashboard";
 import WfmDashboard from "../../pages/wfmDashboard";
+import StaffStatus from "../../pages/StaffStatus";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(true); // 🔥 estado único global
-  const [activeItem, setActiveItem] = useState("workforce");
+  const [activeItem, setActiveItem] = useState("wfm-realtime"); // 🔥 estado para controlar qué dashboard mostrar
+  const renderContent = () => {
+    switch (activeItem) {
+      // case "maturity":
+      //   return <MaturityDashboard />;
+
+      case "wfm-realtime":
+        return <WfmDashboard />;
+      
+      case "wfm-staff-status":
+        return <StaffStatus />;
+
+      // case "wfm-occupancy":
+      //   return <div>Occupancy</div>;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -27,8 +43,9 @@ export default function DashboardLayout() {
         `}
       >
         <main className="p-3 sm:p-6">
+          {renderContent()}
           {/* {activeItem === "maturity" && <MaturityDashboard />} */}
-          {activeItem === "workforce" && <WfmDashboard />}
+          {/* {activeItem === "workforce" && <WfmDashboard />} */}
         </main>
       </div>
     </div>

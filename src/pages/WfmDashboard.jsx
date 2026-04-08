@@ -16,7 +16,7 @@ const WfmDashboard = () => {
 
   // 🔥 FETCH
   useEffect(() => {
-    fetch("https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence")
+    fetch("https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence?sp=wfm")
       .then((res) => res.json())
       .then((data) => {
         setAgents(data.items || []);

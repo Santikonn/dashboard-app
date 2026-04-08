@@ -15,7 +15,13 @@ import {
 
 export const navigation = [  
   // { key: "maturity", name: "Maturity & Health", icon: Target },
-  { key: "workforce", name: "Workforce Intelligence", icon: Users },
+  { key: "workforce", name: "Workforce Intelligence", icon: Users,
+    children: [
+      { key: "wfm-realtime", name: "Real Time Report" },
+      { key: "wfm-staff-status", name: "Staff Status" },
+      // { key: "wfm-occupancy", name: "Occupancy" },
+    ]
+  },
   // { key: "overview", name: "Overview", icon: LayoutDashboard },
   // { key: "operations", name: "Operational Analytics", icon: BarChart3 },
   // { key: "financial", name: "Financial Intelligence", icon: DollarSign },
