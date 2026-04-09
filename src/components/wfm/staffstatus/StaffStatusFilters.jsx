@@ -10,7 +10,11 @@ const StaffStatusFilters = ({ onChange }) => {
         })
     );
 
-    const cutoff = new Date();
+    const cutoff = new Date(
+        new Date().toLocaleString("en-US", {
+            timeZone: "America/New_York",
+        })
+    );
     cutoff.setHours(0, 30, 0, 0);
 
     if (now < cutoff) {
