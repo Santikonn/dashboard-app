@@ -19,7 +19,7 @@ export const navigation = [
     children: [
       { key: "wfm-realtime", name: "Real Time Report" },
       { key: "wfm-staff-status", name: "Staff Status" },
-      // { key: "wfm-occupancy", name: "Occupancy" },
+      { key: "wfm-adherence", name: "Adherence" },
     ]
   },
   // { key: "overview", name: "Overview", icon: LayoutDashboard },

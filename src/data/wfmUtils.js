@@ -28,9 +28,9 @@ export const buildLeaders = (agents) => {
 
     const status = a.real_status;
 
-    if (["Voyce_support", "Available", "On Call"].includes(status)) {
+    if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
       g.connected += 1;
-    } else if (status === null) {
+    } else if (status === null || status === "OffWork") {
       g.absent += 1;
     } else if (status === "Lunch Break") {
       g.LunchBreak += 1;
@@ -68,9 +68,9 @@ export const buildLeaders = (agents) => {
     if (a.match === 1) ag.correct += 1;
     if (a.match === 0 && a.real_status !== null) ag.wrong += 1;
 
-    if (["Voyce_support", "Available", "On Call"].includes(status)) {
+    if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
       ag.connected += 1;
-    } else if (status === null) {
+    } else if (status === null || status === "OffWork") {
       ag.absent += 1;
     } else if (status === "Lunch Break") {
       ag.LunchBreak += 1;
@@ -148,9 +148,9 @@ export const buildKPIs = (agents) => {
 
     const status = a.real_status;
 
-    if (["Voyce_support", "Available", "On Call"].includes(status)) {
+    if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
       kpi.connected += 1;
-    } else if (status === null) {
+    } else if (status === null || status === "OffWork") {
       kpi.absent += 1;
     } else if (status === "Lunch Break") {
       kpi.LunchBreak += 1;

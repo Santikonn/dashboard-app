@@ -3,6 +3,7 @@ import { useState } from "react";
 import MaturityDashboard from "../../pages/MaturityDashboard";
 import WfmDashboard from "../../pages/wfmDashboard";
 import StaffStatus from "../../pages/StaffStatus";
+import Adherence from "../../pages/Adherence";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(true); // 🔥 estado único global
@@ -18,8 +19,8 @@ export default function DashboardLayout() {
       case "wfm-staff-status":
         return <StaffStatus />;
 
-      // case "wfm-occupancy":
-      //   return <div>Occupancy</div>;
+      case "wfm-adherence":
+        return <Adherence />;
     }
   };
 
