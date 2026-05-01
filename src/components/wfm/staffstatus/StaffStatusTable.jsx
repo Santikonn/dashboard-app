@@ -8,7 +8,7 @@ const statusStyles = {
   "Early Log": "bg-orange-100 text-orange-700",
   "Over Time": "bg-purple-100 text-purple-700",
   "Absent": "bg-red-100 text-red-700",
-  "Check Sch": "bg-slate-200 text-slate-700",
+  "Unauthorized": "bg-slate-200 text-slate-700",
 };
 
 /* 🔥 BADGE */

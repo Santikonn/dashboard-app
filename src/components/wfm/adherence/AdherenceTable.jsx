@@ -97,26 +97,64 @@ const AdherenceTable = ({ data = [] }) => {
   const groupedData = useMemo(() => {
     if (!Array.isArray(data)) return [];
 
+    let groupsArray = [];
+
+    // 🔹 Caso 1: ya viene agrupado
     if (data.length > 0 && Array.isArray(data[0]?.agents)) {
-      return data.map((item) => ({
-        leader: item.leader || "Unknown",
-        rows: item.agents || [],
-      }));
+      groupsArray = data.map((item) => {
+        const leaderRow = item.agents?.find(
+          (r) => r.level?.toLowerCase().trim() === "leader"
+        );
+
+        return {
+          leader: item.leader || "Unknown",
+          rows: item.agents || [],
+          adherenceSort:
+            leaderRow?.adherence_pct === null ||
+            leaderRow?.adherence_pct === undefined
+              ? null
+              : Number(leaderRow.adherence_pct),
+        };
+      });
     }
 
-    const groups = {};
+    // 🔹 Caso 2: viene plano
+    else {
+      const groups = {};
 
-    data.forEach((row) => {
-      const leader = row?.leader || "Unknown";
+      data.forEach((row) => {
+        const leader = row?.leader || "Unknown";
 
-      if (!groups[leader]) groups[leader] = [];
-      groups[leader].push(row);
-    });
+        if (!groups[leader]) groups[leader] = [];
+        groups[leader].push(row);
+      });
 
-    return Object.entries(groups).map(([leader, rows]) => ({
-      leader,
-      rows,
-    }));
+      groupsArray = Object.entries(groups).map(([leader, rows]) => {
+        const leaderRow = rows.find(
+          (r) => r.level?.toLowerCase().trim() === "leader"
+        );
+
+        return {
+          leader,
+          rows,
+          adherenceSort:
+            leaderRow?.adherence_pct === null ||
+            leaderRow?.adherence_pct === undefined
+              ? null
+              : Number(leaderRow.adherence_pct),
+        };
+      });
+    }
+
+    // 🔥 SORT GLOBAL (clave)
+    return groupsArray
+      .sort((a, b) => {
+        if (a.adherenceSort === null) return 1;
+        if (b.adherenceSort === null) return -1;
+        return a.adherenceSort - b.adherenceSort;
+      })
+      .map(({ leader, rows }) => ({ leader, rows }));
+
   }, [data]);
 
   return (
@@ -130,7 +168,7 @@ const AdherenceTable = ({ data = [] }) => {
           ===================================================== */}
           <thead className="bg-slate-50 text-slate-500 sticky top-0 z-10">
             <tr className="border-b">
-              <th className="p-3 text-left font-semibold">Leader/Agent</th>
+              <th className="p-3 text-left font-semibold sticky left-0 z-20 bg-slate-50">Leader/Agent</th>
 
               <th className="px-3 py-3 font-semibold">ID Weyi</th>
               <th className="px-3 py-3 font-semibold">ID IEX</th>
@@ -174,7 +212,7 @@ const AdherenceTable = ({ data = [] }) => {
                   "
                 >
                   <td
-                    className="p-3 text-left font-semibold text-slate-700"
+                    className="p-3 text-left font-semibold text-slate-700 sticky left-0 z-20 bg-slate-50"
                   >
                     <div className="flex items-center gap-2">
 
@@ -250,6 +288,18 @@ const AdherenceTable = ({ data = [] }) => {
                 {/* DETAIL ROWS */}
                 {openRows[group.leader] &&
                   group.rows.filter((row) => row.level?.toLowerCase().trim() === 'agent')
+                  .sort((a, b) => {
+                    const aVal = parseFloat(a.adherence_pct);
+                    const bVal = parseFloat(b.adherence_pct);
+
+                    const aNull = isNaN(aVal);
+                    const bNull = isNaN(bVal);
+
+                    if (aNull) return 1;
+                    if (bNull) return -1;
+
+                    return aVal - bVal;
+                  })
                   .map((row, i) => (
                     <tr
                       key={`${group.leader}-${i}`}
@@ -260,7 +310,7 @@ const AdherenceTable = ({ data = [] }) => {
                       "
                     >
                       {/* AGENT */}
-                      <td className="pl-10 pr-2 text-left text-slate-700 whitespace-nowrap font-medium">
+                      <td className="pl-10 pr-2 text-left text-slate-700 whitespace-nowrap font-medium sticky left-0 z-20 bg-slate-50">
                         {row.agent_name || "-"}
                       </td>
 

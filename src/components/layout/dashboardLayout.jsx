@@ -4,6 +4,7 @@ import MaturityDashboard from "../../pages/MaturityDashboard";
 import WfmDashboard from "../../pages/wfmDashboard";
 import StaffStatus from "../../pages/StaffStatus";
 import Adherence from "../../pages/Adherence";
+import AdherenceSummary from "../../pages/AdherenceSummary";
 
 export default function DashboardLayout() {
   const [collapsed, setCollapsed] = useState(true); // 🔥 estado único global
@@ -21,6 +22,9 @@ export default function DashboardLayout() {
 
       case "wfm-adherence":
         return <Adherence />;
+
+      // case "wfm-adherence-summary":
+      //   return <AdherenceSummary />;
     }
   };
 
