@@ -21,7 +21,8 @@ const PercentBadge = ({ value }) => {
     value === null ||
     value === undefined ||
     value === "" ||
-    Number.isNaN(num);
+    Number.isNaN(num) ||
+    !Number.isFinite(num);
 
   if (isEmpty) {
     return (
@@ -53,11 +54,14 @@ const PercentBadge = ({ value }) => {
 ===================================================== */
 const AdheSumTable = ({ data = [] }) => {
 
+  /* 🔥 DETECTAR SI ES SP2 */
+  const hasAgentData = useMemo(() => {
+    return data.length > 0 && "agent_name" in data[0];
+  }, [data]);
+
   /* 🔥 SOLO AGENTES */
   const agentData = useMemo(() => {
-    return data.filter(
-      (d) => d.level?.toLowerCase().trim() === "agent"
-    );
+    return data.filter(d => d.agent_name);
   }, [data]);
 
   /* 🔥 FECHAS */
@@ -66,11 +70,17 @@ const AdheSumTable = ({ data = [] }) => {
   }, [agentData]);
 
   /* 🔥 WIDTH DINÁMICO */
+  const FIRST_COL_WIDTH = 220;
+  const COL_WIDTH = 90;
+
   const tableWidth = useMemo(() => {
-    return `${Math.max(dates.length * 120, 1400)}px`;
+    return `${Math.max(
+      FIRST_COL_WIDTH + (dates.length + 1) * COL_WIDTH,
+      1280
+    )}px`;
   }, [dates]);
 
-  /* 🔥 GROUP */
+  /* 🔥 GROUP POR AGENTE */
   const agents = useMemo(() => {
     const map = {};
 
@@ -90,36 +100,41 @@ const AdheSumTable = ({ data = [] }) => {
     return Object.values(map);
   }, [agentData]);
 
+  /* 🔥 CALC SAFE */
   const calc = (num, den) => {
-    if (!den || den === 0) return null;
-    return num / den;
+    const n = Number(num);
+    const d = Number(den);
+
+    if (!d || d === 0 || isNaN(d)) return null;
+    if (isNaN(n)) return null;
+
+    return n / d;
   };
+
+  /* 🔥 AQUÍ SI VALIDAS */
+  if (!hasAgentData) return null;
 
   return (
     <div className="bg-white border rounded-2xl shadow-sm overflow-hidden">
 
-      {/* 🔥 SCROLL X + Y + scrollbar oculto */}
       <div className="max-h-[650px] overflow-x-auto overflow-y-auto scrollbar-none">
 
         <table
           style={{ minWidth: tableWidth }}
-          className="text-[10px] text-center border-separate border-spacing-0"
+          className="table-fixed text-[10px] text-center border-separate border-spacing-0"
         >
 
           {/* HEADER */}
           <thead className="bg-slate-50 text-slate-500 sticky top-0 z-20">
             <tr className="border-b">
 
-              <th className="p-2 text-left font-semibold sticky left-0 bg-slate-50 z-30">
+              <th className="w-[200px] min-w-[200px] max-w-[200px] p-2 text-left font-semibold sticky left-0 bg-slate-50 z-30">
                 Agent / Metric
               </th>
 
               {dates.map((d) => (
-                <th
-                  key={d}
-                  className="px-2 py-2 font-semibold whitespace-nowrap"
-                >
-                  {d} {/* 🔥 FECHA COMPLETA */}
+                <th key={d} className="px-2 py-2 font-semibold whitespace-nowrap">
+                  {d}
                 </th>
               ))}
 
@@ -152,7 +167,6 @@ const AdheSumTable = ({ data = [] }) => {
                 total.in_adhe_ot_sec += Number(r.in_adhe_ot_sec) || 0;
                 total.conf_in_sec += Number(r.conf_in_sec) || 0;
                 total.conf_ot_sec += Number(r.conf_ot_sec) || 0;
-
               });
 
               return (

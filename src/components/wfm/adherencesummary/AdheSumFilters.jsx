@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import FilterDropdownPro from "../FilterDropDownValues";
 import FilterDropdown from "../FilterDropdwon";
 
 /* =========================
@@ -18,7 +19,9 @@ const AdheSumFilters = ({ onChange }) => {
   const [startDate, setStartDate] = useState(get7DaysAgo());
   const [endDate, setEndDate] = useState(getToday());
 
-  const [rawData, setRawData] = useState([]);
+  // 🔥 DATA SEPARADA
+  const [leaderData, setLeaderData] = useState([]);
+  const [agentData, setAgentData] = useState([]);
 
   const [leaderOptions, setLeaderOptions] = useState([]);
   const [agentOptions, setAgentOptions] = useState([]);
@@ -28,103 +31,157 @@ const AdheSumFilters = ({ onChange }) => {
     agents: []
   });
 
-  // 🔥 fallback seguro
   const safeOnChange = onChange || (() => {});
+  const hasLeaders = filters.leaders?.length > 0;
 
   /* =========================
-     FETCH DATA
+     FETCH LEADERS (SP 1)
   ========================= */
-  const fetchData = async () => {
+  const fetchLeaders = async () => {
     try {
       const res = await fetch(
-        `https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence?sp=adherence_summary&start_date=${startDate}&end_date=${endDate}`
+        `https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence?sp=adherence_leader&start_date=${startDate}&end_date=${endDate}`
       );
 
       const json = await res.json();
       const data = json.items || [];
 
-      setRawData(data);
+      setLeaderData(data);
 
-      // 🔥 leaders únicos SOLO de agentes
-      const leaders = [
-        ...new Set(
-          data
-            .filter(d => d.level === "agent")
-            .map(d => d.leader || "Unknown")
-        )
-      ].sort();
+      const leaders = data
+        .map(d => {
+          const adhe = Number(d.adhe_sec || 0);
+          const inAdhe = Number(d.in_adhe_sec || 0);
+
+          const adherence =
+            adhe === 0 ? null : inAdhe / adhe;
+
+          return {
+            name: d.leader,
+            adherence
+          };
+        })
+
+        // 🔥 ordenar menor → mayor, null al final
+        .sort((a, b) => {
+          if (a.adherence === null) return 1;
+          if (b.adherence === null) return -1;
+          return a.adherence - b.adherence;
+        })
+
+        // 🔥 formato final para dropdown
+        .map(d => {
+          const pct =
+            d.adherence === null
+              ? "N/A"
+              : `${(d.adherence * 100).toFixed(1)}%`;
+
+          return {
+            label: `${d.name} - ${pct}`,
+            value: d.name
+          };
+        });
 
       setLeaderOptions(leaders);
+
+      // 🔥 limpiar agentes siempre que se recargan fechas
+      setAgentData([]);
+      setAgentOptions([]);
 
       safeOnChange({ data });
 
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching leaders:", err);
     }
   };
 
   /* =========================
-     INIT / FETCH
+     FETCH AGENTES (SP 2)
+  ========================= */
+  const fetchAgents = async (leadersSelected) => {
+    if (!leadersSelected || leadersSelected.length === 0) return;
+
+    try {
+      const leadersParam = leadersSelected
+        .map(l => l.trim())
+        .join(",");
+
+      const res = await fetch(
+        `https://pyntfkpxq0.execute-api.us-east-2.amazonaws.com/adherence?sp=adherence_summary&start_date=${startDate}&end_date=${endDate}&leaders=${leadersParam}`
+      );
+
+      const json = await res.json();
+      const data = json.items || [];
+
+      setAgentData(data);
+
+      const agents = [
+        ...new Set(
+          data.map(d => d.agent_name).filter(Boolean)
+        )
+      ].sort();
+
+      setAgentOptions(agents);
+
+    } catch (err) {
+      console.error("Error fetching agents:", err);
+    }
+  };
+
+  /* =========================
+     EFFECT: FECHAS
   ========================= */
   useEffect(() => {
-    fetchData();
+    fetchLeaders();
+    setFilters({ leaders: [], agents: [] });
   }, [startDate, endDate]);
 
   /* =========================
-     REBUILD AGENTS
+     EFFECT: LEADERS
   ========================= */
   useEffect(() => {
-    let filtered = rawData.filter(d => d.level === "agent");
-
-    if (filters.leaders.length > 0) {
-      filtered = filtered.filter(row =>
-        filters.leaders.includes(row.leader || "Unknown")
-      );
+    if (hasLeaders) {
+      fetchAgents(filters.leaders);
+    } else {
+      // 🔥 limpieza crítica
+      setAgentData([]);
+      setAgentOptions([]);
     }
-
-    const agents = [
-      ...new Set(
-        filtered
-          .map(d => d.agent_name)
-          .filter(Boolean)
-      )
-    ].sort();
-
-    setAgentOptions(agents);
-
-  }, [filters.leaders, rawData]);
+  }, [filters.leaders]);
 
   /* =========================
      APPLY FILTERS
   ========================= */
   useEffect(() => {
-    let filtered = rawData;
+    let data = [];
 
-    if (filters.leaders.length > 0) {
-      filtered = filtered.filter(row =>
-        filters.leaders.includes(row.leader || "Unknown")
-      );
+    if (hasLeaders) {
+      // 🔥 SOLO usa agentData si hay leaders
+      data = agentData;
+
+      if (filters.agents.length > 0) {
+        data = data.filter(row =>
+          filters.agents.includes(row.agent_name)
+        );
+      }
+
+    } else {
+      // 🔥 fallback seguro
+      data = leaderData;
     }
 
-    if (filters.agents.length > 0) {
-      filtered = filtered.filter(row =>
-        filters.agents.includes(row.agent_name)
-      );
-    }
+    safeOnChange({ data });
 
-    safeOnChange({ data: filtered });
-
-  }, [filters, rawData]);
+  }, [filters, leaderData, agentData]);
 
   /* =========================
-     DATE HANDLERS
+     HANDLERS FECHA
   ========================= */
   const handleStartDateChange = (e) => {
     const newStart = e.target.value;
 
     setStartDate(newStart);
 
-    // 🔥 evitar start > end
     if (newStart > endDate) {
       setEndDate(newStart);
     }
@@ -135,7 +192,6 @@ const AdheSumFilters = ({ onChange }) => {
   const handleEndDateChange = (e) => {
     const newEnd = e.target.value;
 
-    // 🔥 bloquear end < start
     if (newEnd < startDate) {
       setEndDate(startDate);
       return;
@@ -146,6 +202,9 @@ const AdheSumFilters = ({ onChange }) => {
     setFilters({ leaders: [], agents: [] });
   };
 
+  /* =========================
+     UI
+  ========================= */
   return (
     <div className="bg-white border rounded-2xl p-4 shadow-sm">
 
@@ -182,7 +241,7 @@ const AdheSumFilters = ({ onChange }) => {
 
         {/* LEADER */}
         <div className="[&>div]:w-full">
-          <FilterDropdown
+          <FilterDropdownPro
             label="Leader"
             options={leaderOptions}
             selected={filters.leaders}
@@ -190,7 +249,7 @@ const AdheSumFilters = ({ onChange }) => {
               setFilters(prev => ({
                 ...prev,
                 leaders: val,
-                agents: [] // reset agentes
+                agents: []
               }))
             }
           />

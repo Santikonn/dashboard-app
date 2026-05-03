@@ -23,8 +23,8 @@ export default function DashboardLayout() {
       case "wfm-adherence":
         return <Adherence />;
 
-      // case "wfm-adherence-summary":
-      //   return <AdherenceSummary />;
+      case "wfm-adherence-summary":
+        return <AdherenceSummary />;
     }
   };
 

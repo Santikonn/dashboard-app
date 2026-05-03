@@ -20,7 +20,7 @@ export const navigation = [
       { key: "wfm-realtime", name: "Real Time Report" },
       { key: "wfm-staff-status", name: "Staff Status" },
       { key: "wfm-adherence", name: "Adherence" },
-      // { key: "wfm-adherence-summary", name: "Adherence Summary" },
+      { key: "wfm-adherence-summary", name: "Adherence Summary" },
     ]
   },
   // { key: "overview", name: "Overview", icon: LayoutDashboard },

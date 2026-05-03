@@ -18,13 +18,29 @@ const getVariant = (v) => {
 
 const AdheSummaryCards = ({ data = [] }) => {
 
-  const totals = useMemo(() => {
-    if (!data.length) return null;
+  /* =========================
+     BASE DATA (CLAVE 🔥)
+  ========================= */
+  const baseData = useMemo(() => {
+    if (!data.length) return [];
 
-    const onlyAgents = data.filter(d => d.level === "agent");
+    // 👉 Si viene de SP2 (agents)
+    if (data[0]?.level) {
+      return data.filter(d => d.level === "agent");
+    }
+
+    // 👉 Si viene de SP1 (leaders)
+    return data;
+  }, [data]);
+
+  /* =========================
+     CALCULOS
+  ========================= */
+  const totals = useMemo(() => {
+    if (!baseData.length) return null;
 
     const sum = (key) =>
-      onlyAgents.reduce((acc, row) => acc + (Number(row[key]) || 0), 0);
+      baseData.reduce((acc, row) => acc + (Number(row[key]) || 0), 0);
 
     const adhe_sec = sum("adhe_sec");
     const in_adhe_sec = sum("in_adhe_sec");
@@ -39,10 +55,13 @@ const AdheSummaryCards = ({ data = [] }) => {
       conformance: adhe_sec ? conf_in_sec / adhe_sec : null,
       conformance_ot: adh_ot_sec ? conf_ot_sec / adh_ot_sec : null,
     };
-  }, [data]);
+  }, [baseData]);
 
   if (!totals) return null;
 
+  /* =========================
+     UI
+  ========================= */
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
 
