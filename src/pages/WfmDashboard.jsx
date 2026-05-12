@@ -124,16 +124,20 @@ const WfmDashboard = () => {
               grid-cols-2 
               sm:grid-cols-3 
               md:grid-cols-4 
-              lg:grid-cols-7 
+              lg:grid-cols-8 
               gap-3
             ">
-              <KPICard title="Expected Agents" value={kpis.expected} />
-              <KPICard title="Compliance" value={kpis.compliance} />
-              <KPICard title="On Call" value={kpis.connected} variant="success" />
-              <KPICard title="Absent" value={kpis.absent} variant="danger" />
-              <KPICard title="Lunch/Break" value={kpis.LunchBreak} variant="warning" />
-              <KPICard title="Training" value={kpis.ClassTraining} />
-              <KPICard title="Other" value={kpis.other} />
+              <KPICard title="Scheduled Agents" value={kpis.expected} />
+              <KPICard title="Productive" value={kpis.connected} delta={kpis.delta_connect} variant="success" />
+              <KPICard title="Absent" value={kpis.absent} delta={kpis.delta_absent} variant="danger" />
+              <KPICard title="Lunch/Break" value={kpis.LunchBreak} delta={kpis.delta_LunchBreak} />
+              <KPICard title="Training" value={kpis.ClassTraining} delta={kpis.delta_ClassTraining} />
+              <KPICard title="Other" value={kpis.other} delta={kpis.delta_other} />
+              <KPICard title="Without Schedule" value={kpis.compliance} delta={kpis.connect_ws} variant="orange" />
+              <KPICard 
+                title="Delta Scheduled" value={kpis.delta} 
+                variant={kpis.delta > 0 ? "success": kpis.delta < 0 ? "danger": "default"} 
+              />
             </div>
           )}
 

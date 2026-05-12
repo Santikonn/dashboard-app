@@ -21,10 +21,13 @@ export const buildLeaders = (agents) => {
 
     const g = grouped[leader];
 
-    g.expected += 1;
+    if (a.scheduled_activity !== null && a.scheduled_activity !== 'Off' && a.scheduled_activity !== 'Closed') {
+      g.expected += 1;
+      
+      if (a.match === 1) g.correct += 1;
+      if (a.match === 0 && a.real_status !== null) g.wrong += 1;
+    }
 
-    if (a.match === 1) g.correct += 1;
-    if (a.match === 0 && a.real_status !== null) g.wrong += 1;
 
     const status = a.real_status;
 
@@ -63,10 +66,13 @@ export const buildLeaders = (agents) => {
     const ag = g.agents[agentId];
 
     // 🔹 AGENT METRICS (MISMA LÓGICA)
-    ag.expected += 1;
+    if (a.scheduled_activity !== null && a.scheduled_activity !== 'Off' && a.scheduled_activity !== 'Closed') {
+      ag.expected += 1;
 
-    if (a.match === 1) ag.correct += 1;
-    if (a.match === 0 && a.real_status !== null) ag.wrong += 1;
+      if (a.match === 1) ag.correct += 1;
+      if (a.match === 0 && a.real_status !== null) ag.wrong += 1;
+    }
+    // ag.expected += 1;
 
     if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
       ag.connected += 1;
@@ -89,7 +95,9 @@ export const buildLeaders = (agents) => {
 
     let severity = "HEALTHY";
 
-    if (absentRate >= 0.25 || wrongRate >= 0.25) {
+    if (g.expected === 0) {
+      severity = "UNEXPECTED";
+    } else if (absentRate >= 0.25 || wrongRate >= 0.25) {
       severity = "CRITICAL";
     } else if (absentRate >= 0.10 || wrongRate >= 0.10) {
       severity = "WARNING";
@@ -104,7 +112,9 @@ export const buildLeaders = (agents) => {
 
       let severity = "HEALTHY";
 
-      if (absentRate >= 0.25 || wrongRate >= 0.25) {
+      if (ag.correct === 0 && ag.wrong === 0 && ag.absent === 0) {
+        severity = "UNEXPECTED";
+      } else if (absentRate >= 0.25 || wrongRate >= 0.25) {
         severity = "CRITICAL";
       } else if (absentRate >= 0.10 || wrongRate >= 0.10) {
         severity = "WARNING";
@@ -138,17 +148,38 @@ export const buildKPIs = (agents) => {
     absent: 0,
     LunchBreak: 0,
     ClassTraining: 0,
-    other: 0
+    other: 0,
+    compliance: 0,
+    delta: 0,
+    connect_sch: 0,
+    absent_sch: 0,
+    LunchBreak_sch: 0,
+    ClassTraining_sch: 0,
+    other_sch: 0,
+    delta_connect: 0,
+    delta_absent: 0,
+    delta_LunchBreak: 0,
+    delta_ClassTraining: 0,
+    delta_other: 0,
+    connect_ws: 0
   };
 
   agents.forEach((a) => {
-    kpi.expected += 1;
+    if (a.scheduled_activity !== null && a.scheduled_activity !== 'Off' && a.scheduled_activity !== 'Closed') {
+      kpi.expected += 1;
+    }
 
     if (a.match === 1) kpi.correct += 1;
 
     const status = a.real_status;
+    const schedule = a.scheduled_activity;
 
-    if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
+    if ([null, 'Off', 'Closed'].includes(schedule)) {      
+      kpi.compliance += 1;
+      if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
+        kpi.connect_ws += 1;
+      }
+    } else if (["Voyce_support", "Available", "On Call", "Other: I"].includes(status)) {
       kpi.connected += 1;
     } else if (status === null || status === "OffWork") {
       kpi.absent += 1;
@@ -159,13 +190,34 @@ export const buildKPIs = (agents) => {
     } else {
       kpi.other += 1;
     }
+
+    kpi.delta = kpi.connected + kpi.LunchBreak + kpi.ClassTraining + kpi.other + kpi.compliance - kpi.expected;
+
+    if (["Voyce Support", "BPO - Extra Hours", "Open", "Extra Hours"].includes(schedule)) {
+      kpi.connect_sch += 1;
+    } else if (["Absent without Coverage", "Time Off with Coverage"].includes(schedule)) {
+      kpi.absent_sch += 1;
+    } else if (["Lunch", "Break"].includes(schedule)) {
+      kpi.LunchBreak_sch += 1;
+    } else if (["Training", "Coaching"].includes(schedule)) {
+      kpi.ClassTraining_sch += 1;
+    } else if (["Team Meeting"].includes(schedule)) {
+      kpi.other_sch += 1;
+    }
+
+    kpi.delta_connect = kpi.connected - kpi.connect_sch;
+    kpi.delta_absent = kpi.absent - kpi.absent_sch;
+    kpi.delta_LunchBreak = kpi.LunchBreak - kpi.LunchBreak_sch;
+    kpi.delta_ClassTraining = kpi.ClassTraining - kpi.ClassTraining_sch;
+    kpi.delta_other = kpi.other - kpi.other_sch;
+    
   });
   
-  const total = kpi.expected || 0;
+  // const total = kpi.expected || 0;
 
-  kpi.compliance = total
-    ? ((kpi.correct / total) * 100).toFixed(1) + "%"
-    : 0 + "%";
+  // kpi.compliance = total
+  //   ? ((kpi.correct / total) * 100).toFixed(1) + "%"
+  //   : 0 + "%";
 
   return kpi;
 };

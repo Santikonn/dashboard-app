@@ -66,11 +66,22 @@ const WFMTable = ({ data }) => {
                   </td>
 
                   <td>{row.expected}</td>
-                  <td>{row.correct}</td>
-                  <td>{row.wrong}</td>
+
+                  <td>
+                    {row.correct === 0 && row.wrong === 0 && row.absent === 0
+                      ? "-"
+                      : row.correct}
+                  </td>
+                  <td>
+                    {row.correct === 0 && row.wrong === 0 && row.absent === 0
+                      ? "-"
+                      : row.wrong}
+                  </td>
 
                   <td className="text-yellow-600 font-semibold">
-                    {row.compliance}%
+                    {row.correct === 0 && row.wrong === 0 && row.absent === 0
+                      ? "-"
+                      : `${row.compliance}%`}
                   </td>
 
                   <td>
@@ -103,11 +114,21 @@ const WFMTable = ({ data }) => {
                       </td>
 
                       <td></td>
-                      <td>{agent.correct}</td>
-                      <td>{agent.wrong}</td>
+                      <td>
+                        {agent.correct === 0 && agent.wrong === 0 && agent.absent === 0
+                          ? "-"
+                          : agent.correct}
+                      </td>
+                      <td>
+                        {agent.correct === 0 && agent.wrong === 0 && agent.absent === 0
+                          ? "-"
+                          : agent.wrong}
+                      </td>
 
                       <td className="font-medium">
-                        {agent.compliance}%
+                        {agent.correct === 0 && agent.wrong === 0 && agent.absent === 0
+                          ? "-"
+                          : `${agent.compliance}%`}
                       </td>
 
                       <td>
