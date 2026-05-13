@@ -63,7 +63,7 @@ const KPICard = ({ title, value, delta, variant = "default" }) => {
         {delta !== undefined && (
           <span className={`
             text-xs sm:text-sm font-medium 
-            ${["On Call", "Absent", "Without Schedule"].includes(title) ? deltaColor : "text-slate-800"}
+            ${["Productive", "Absent", "Without Schedule"].includes(title) ? deltaColor : "text-slate-800"}
           `}>
             {delta > 0 ? "▲" : delta < 0 ? "▼" : "•"}{Math.abs(delta)}
           </span>
