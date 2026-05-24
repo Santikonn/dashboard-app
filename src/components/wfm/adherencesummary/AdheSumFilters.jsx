@@ -48,16 +48,32 @@ const AdheSumFilters = ({ onChange }) => {
 
       setLeaderData(data);
 
-      const leaders = data
-        .map(d => {
-          const adhe = Number(d.adhe_sec || 0);
-          const inAdhe = Number(d.in_adhe_sec || 0);
+      const grouped = {};
+
+      data.forEach(d => {
+        const leader = d.leader;
+
+        if (!grouped[leader]) {
+          grouped[leader] = {
+            adhe_sec: 0,
+            in_adhe_sec: 0
+          };
+        }
+
+        grouped[leader].adhe_sec += Number(d.adhe_sec || 0);
+        grouped[leader].in_adhe_sec += Number(d.in_adhe_sec || 0);
+      });
+
+      const leaders = Object.entries(grouped)
+        .map(([leader, vals]) => {
 
           const adherence =
-            adhe === 0 ? null : inAdhe / adhe;
+            vals.adhe_sec === 0
+              ? null
+              : vals.in_adhe_sec / vals.adhe_sec;
 
           return {
-            name: d.leader,
+            name: leader,
             adherence
           };
         })

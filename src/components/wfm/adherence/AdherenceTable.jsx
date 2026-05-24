@@ -168,7 +168,7 @@ const AdherenceTable = ({ data = [] }) => {
           ===================================================== */}
           <thead className="bg-slate-50 text-slate-500 sticky top-0 z-10">
             <tr className="border-b">
-              <th className="p-3 text-left font-semibold sticky left-0 z-20 bg-slate-50">Leader/Agent</th>
+              <th className="w-[220px] min-w-[220px] max-w-[220px] p-3 text-left font-semibold sticky left-0 z-20 bg-slate-50">Leader/Agent</th>
 
               <th className="px-3 py-3 font-semibold">ID Weyi</th>
               <th className="px-3 py-3 font-semibold">ID IEX</th>

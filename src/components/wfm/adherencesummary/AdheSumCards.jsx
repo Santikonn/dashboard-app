@@ -16,7 +16,11 @@ const getVariant = (v) => {
   return "danger";
 };
 
-const AdheSummaryCards = ({ data = [] }) => {
+const AdheSummaryCards = ({
+  data = [],
+  metric,
+  setMetric
+}) => {
 
   /* =========================
      BASE DATA (CLAVE 🔥)
@@ -63,31 +67,93 @@ const AdheSummaryCards = ({ data = [] }) => {
      UI
   ========================= */
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div className="flex items-start gap-4">
 
-      <KPICard
-        title="Adherence %"
-        value={formatPct(totals.adherence)}
-        variant={getVariant(totals.adherence)}
-      />
+      {/* =========================================
+          BOTONES
+      ========================================= */}
+      <div className="grid grid-cols-2 gap-2 shrink-0">
 
-      <KPICard
-        title="OT Adherence %"
-        value={formatPct(totals.adherence_ot)}
-        variant={getVariant(totals.adherence_ot)}
-      />
+        <button
+          onClick={() => setMetric("adh")}
+          className={`px-1.5 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap
+            ${
+              metric === "adh"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+        >
+          Adh %
+        </button>
 
-      <KPICard
-        title="Conformance %"
-        value={formatPct(totals.conformance)}
-        variant={getVariant(totals.conformance)}
-      />
+        <button
+          onClick={() => setMetric("adh_ot")}
+          className={`px-1.5 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap
+            ${
+              metric === "adh_ot"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+        >
+          Adh OT %
+        </button>
 
-      <KPICard
-        title="OT Conformance %"
-        value={formatPct(totals.conformance_ot)}
-        variant={getVariant(totals.conformance_ot)}
-      />
+        <button
+          onClick={() => setMetric("conf")}
+          className={`px-1.5 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap
+            ${
+              metric === "conf"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+        >
+          Conf %
+        </button>
+
+        <button
+          onClick={() => setMetric("conf_ot")}
+          className={`px-1.5 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap
+            ${
+              metric === "conf_ot"
+                ? "bg-blue-600 text-white shadow-sm"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+        >
+          Conf OT %
+        </button>
+
+      </div>
+
+      {/* =========================================
+          CARDS
+      ========================================= */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 flex-1">
+
+        <KPICard
+          title="Adherence %"
+          value={formatPct(totals.adherence)}
+          variant={getVariant(totals.adherence)}
+        />
+
+        <KPICard
+          title="OT Adherence %"
+          value={formatPct(totals.adherence_ot)}
+          variant={getVariant(totals.adherence_ot)}
+        />
+
+        <KPICard
+          title="Conformance %"
+          value={formatPct(totals.conformance)}
+          variant={getVariant(totals.conformance)}
+        />
+
+        <KPICard
+          title="OT Conformance %"
+          value={formatPct(totals.conformance_ot)}
+          variant={getVariant(totals.conformance_ot)}
+        />
+
+      </div>
 
     </div>
   );
