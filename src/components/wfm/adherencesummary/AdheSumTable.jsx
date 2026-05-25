@@ -76,7 +76,18 @@ const AdheSumTable = ({
   /* 🔥 FECHAS */
   const dates = useMemo(() => {
     return [...new Set(tableData.map((d) => d.date))].sort();
-  }, [tableData]);
+  }, [tableData]);  
+
+  /* 🔥 CALC SAFE */
+  const calc = (num, den) => {
+    const n = Number(num);
+    const d = Number(den);
+
+    if (!d || d === 0 || isNaN(d)) return null;
+    if (isNaN(n)) return null;
+
+    return n / d;
+  };
 
   /* 🔥 GROUP */
   const entities = useMemo(() => {
@@ -95,19 +106,83 @@ const AdheSumTable = ({
       map[key].rows[row.date] = row;
     });
 
-    return Object.values(map);
-  }, [tableData, entityKey]);
+    const arr = Object.values(map);
 
-  /* 🔥 CALC SAFE */
-  const calc = (num, den) => {
-    const n = Number(num);
-    const d = Number(den);
+    return arr.sort((a, b) => {
 
-    if (!d || d === 0 || isNaN(d)) return null;
-    if (isNaN(n)) return null;
+      const totalA = {
+        adhe_sec: 0,
+        in_adhe_sec: 0,
+        adh_ot_sec: 0,
+        in_adhe_ot_sec: 0,
+        conf_in_sec: 0,
+        conf_ot_sec: 0,
+      };
 
-    return n / d;
-  };
+      const totalB = {
+        adhe_sec: 0,
+        in_adhe_sec: 0,
+        adh_ot_sec: 0,
+        in_adhe_ot_sec: 0,
+        conf_in_sec: 0,
+        conf_ot_sec: 0,
+      };
+
+      dates.forEach((d) => {
+
+        const ra = a.rows[d];
+        const rb = b.rows[d];
+
+        if (ra) {
+          totalA.adhe_sec += Number(ra.adhe_sec) || 0;
+          totalA.in_adhe_sec += Number(ra.in_adhe_sec) || 0;
+
+          totalA.adh_ot_sec += Number(ra.adh_ot_sec) || 0;
+          totalA.in_adhe_ot_sec += Number(ra.in_adhe_ot_sec) || 0;
+
+          totalA.conf_in_sec += Number(ra.conf_in_sec) || 0;
+          totalA.conf_ot_sec += Number(ra.conf_ot_sec) || 0;
+        }
+
+        if (rb) {
+          totalB.adhe_sec += Number(rb.adhe_sec) || 0;
+          totalB.in_adhe_sec += Number(rb.in_adhe_sec) || 0;
+
+          totalB.adh_ot_sec += Number(rb.adh_ot_sec) || 0;
+          totalB.in_adhe_ot_sec += Number(rb.in_adhe_ot_sec) || 0;
+
+          totalB.conf_in_sec += Number(rb.conf_in_sec) || 0;
+          totalB.conf_ot_sec += Number(rb.conf_ot_sec) || 0;
+        }
+      });
+
+      let valA = 0;
+      let valB = 0;
+
+      if (metric === "adh") {
+        valA = calc(totalA.in_adhe_sec, totalA.adhe_sec) || 0;
+        valB = calc(totalB.in_adhe_sec, totalB.adhe_sec) || 0;
+      }
+
+      if (metric === "adh_ot") {
+        valA = calc(totalA.in_adhe_ot_sec, totalA.adh_ot_sec) || 0;
+        valB = calc(totalB.in_adhe_ot_sec, totalB.adh_ot_sec) || 0;
+      }
+
+      if (metric === "conf") {
+        valA = calc(totalA.conf_in_sec, totalA.adhe_sec) || 0;
+        valB = calc(totalB.conf_in_sec, totalB.adhe_sec) || 0;
+      }
+
+      if (metric === "conf_ot") {
+        valA = calc(totalA.conf_ot_sec, totalA.adh_ot_sec) || 0;
+        valB = calc(totalB.conf_ot_sec, totalB.adh_ot_sec) || 0;
+      }
+
+      return valA - valB;
+    });
+
+  }, [tableData, entityKey, dates, metric]);
 
   const exportExcel = () => {
 
