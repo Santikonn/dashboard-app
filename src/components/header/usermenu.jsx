@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from "react";
+import { useMsal } from "@azure/msal-react";
 
-export default function UserMenu() {
+export default function UserMenu( { user } ) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef(null);
+  const { instance } = useMsal();
 
   // Cerrar al hacer click fuera
   useEffect(() => {
@@ -14,6 +16,12 @@ export default function UserMenu() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const signOut = async () => {
+    await instance.logoutRedirect({
+      account: instance.getActiveAccount(),
+    });
+  };
 
   return (
     <div className="relative" ref={menuRef}>
@@ -33,18 +41,13 @@ export default function UserMenu() {
       {open && (
         <div className="absolute right-0 mt-2 w-48 rounded-md border bg-popover p-1 shadow-md z-50">
           <div className="px-2 py-1.5">
-            <p className="text-sm font-medium">Santiago Moreno</p>
-            <p className="text-xs text-muted-foreground">edwin.morneo@elevate.cx</p>
+            <p className="text-sm font-medium">{user.name}</p>
+            <p className="text-xs text-muted-foreground">{user.email}</p>
           </div>
           <div className="h-px my-1 bg-muted"></div>
-          <button className="w-full text-left text-sm px-2 py-1.5 rounded-sm hover:bg-accent">
-            Profile
-          </button>
-          <button className="w-full text-left text-sm px-2 py-1.5 rounded-sm hover:bg-accent">
-            Preferences
-          </button>
-          <div className="h-px my-1 bg-muted"></div>
-          <button className="w-full text-left text-sm px-2 py-1.5 rounded-sm text-destructive hover:bg-accent">
+          <button 
+          onClick={signOut}
+          className="w-full text-left text-sm px-2 py-1.5 rounded-sm text-destructive hover:bg-accent">
             Sign Out
           </button>
         </div>

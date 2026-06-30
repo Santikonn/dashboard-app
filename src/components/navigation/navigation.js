@@ -10,11 +10,13 @@ import {
   BookOpen,
   MessageSquare,
   Brain,
-  Bot
+  Bot,
+  BadgeCheck
 } from "lucide-react";
 
 export const navigation = [  
-  // { key: "maturity", name: "Maturity & Health", icon: Target },
+  { key: "maturity", name: "Maturity & Health", icon: Target },
+  
   { key: "workforce", name: "Workforce Intelligence", icon: Users,
     children: [
       { key: "wfm-realtime", name: "Real Time Report" },
@@ -23,12 +25,12 @@ export const navigation = [
       { key: "wfm-adherence-summary", name: "Adherence Summary" },
     ]
   },
-  // { key: "overview", name: "Overview", icon: LayoutDashboard },
-  // { key: "operations", name: "Operational Analytics", icon: BarChart3 },
-  // { key: "financial", name: "Financial Intelligence", icon: DollarSign },
-  // { key: "command", name: "Command Center", icon: Radio },
-  // { key: "knowledge", name: "Knowledge & Guidance", icon: BookOpen },
-  // { key: "coaching", name: "Coaching Effectiveness", icon: MessageSquare },
-  // { key: "predictive", name: "Predictive Intelligence", icon: Brain },
-  // { key: "ai", name: "AI Agents", icon: Bot },
+
+  { key: "quality", name: "Quality Assurance", icon: BadgeCheck,
+    children: [
+      { key: "qa-forms", name: "QA Forms" },
+      { key: "qa-evaluations", name: "Evaluations" },
+      { key: "qa-dashboard", name: "QA Dashboard" }
+    ]
+  }
 ];

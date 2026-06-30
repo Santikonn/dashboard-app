@@ -2,11 +2,11 @@ import OrganizationSwitcher from "./organizationSwitcher";
 import UserMenu from "./usermenu";
 import { Bell, Settings, Search } from "lucide-react";
 
-export default function Header() {
+export default function Header({ user }) {
   return (
     <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6">
       {/* Left */}
-      <OrganizationSwitcher />
+      <OrganizationSwitcher user={user} />
 
       {/* Search */}
       <div className="flex-1 max-w-xl mx-8">
@@ -35,7 +35,7 @@ export default function Header() {
           <Settings className="w-5 h-5 text-muted-foreground" />
         </button>
 
-        <UserMenu />
+        <UserMenu user={user} />
         
       </div>
     </header>

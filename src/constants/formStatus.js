@@ -1,0 +1,7 @@
+export const FORM_STATUS = {
+
+    DRAFT: "DRAFT",
+    PUBLISHED: "PUBLISHED",
+    DISABLED: "DISABLED"
+
+};
