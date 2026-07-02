@@ -1,5 +1,5 @@
 import React from "react";
-import { areaInsightsData } from "../../data/areaInsightsData";
+import { areaInsightsData } from "../data/areaInsightsData";
 
 export default function AreaInsights({ selectedArea }) {
 

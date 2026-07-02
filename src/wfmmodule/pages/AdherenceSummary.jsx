@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
-import AdheSumFilters from "../components/wfm/adherencesummary/AdheSumFilters";
-import AdheSummaryCards from "../components/wfm/adherencesummary/AdheSumCards";
-import AdheSumTable from "../components/wfm/adherencesummary/AdheSumTable";
+import AdheSumFilters from "../components/adherencesummary/AdheSumFilters";
+import AdheSummaryCards from "../components/adherencesummary/AdheSumCards";
+import AdheSumTable from "../components/adherencesummary/AdheSumTable";
 
 const AdherenceSummary = () => {
   const [data, setData] = useState([]);

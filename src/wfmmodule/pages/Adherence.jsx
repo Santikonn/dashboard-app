@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import AdherenceFilters from "../components/wfm/adherence/AdherenceFilters";
-import AdherenceTable from "../components/wfm/adherence/AdherenceTable";
+import AdherenceFilters from "../components/adherence/AdherenceFilters";
+import AdherenceTable from "../components/adherence/AdherenceTable";
 
 const Adherence = () => {
   const [data, setData] = useState([]);

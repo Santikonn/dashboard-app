@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { navigation } from "../navigation/navigation";
+import { navigation } from "./navigation/navigation";
 import { ChevronLeft } from "lucide-react";
 
 export default function Sidebar({

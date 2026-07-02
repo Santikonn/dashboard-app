@@ -26,11 +26,11 @@ export const navigation = [
     ]
   },
 
-  { key: "quality", name: "Quality Assurance", icon: BadgeCheck,
-    children: [
-      { key: "qa-forms", name: "QA Forms" },
-      { key: "qa-evaluations", name: "Evaluations" },
-      { key: "qa-dashboard", name: "QA Dashboard" }
-    ]
-  }
+  // { key: "quality", name: "Quality Assurance", icon: BadgeCheck,
+  //   children: [
+  //     { key: "qa-forms", name: "QA Forms" },
+  //     { key: "qa-evaluations", name: "Evaluations" },
+  //     { key: "qa-dashboard", name: "QA Dashboard" }
+  //   ]
+  // }
 ];

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import StaffStatusFilters from "../components/wfm/staffstatus//StaffStatusFilters";
-import StaffStatusTable from "../components/wfm/staffstatus//StaffStatusTable";
+import StaffStatusFilters from "../components/staffstatus/StaffStatusFilters";
+import StaffStatusTable from "../components/staffstatus/StaffStatusTable";
 
 const StaffStatus = () => {
   const [data, setData] = useState([]);

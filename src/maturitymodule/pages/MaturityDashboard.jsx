@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { rawMaturityData } from "../data/maturityData";
-import AreaTabs from "../components/maturity/AreaTabs";
-import CategoryTable from "../components/maturity/CategoryTable";
-import DashboardGauges from "../components/maturity/DashboardGauges";
-import ProgressBar from "../components/maturity/ProgressBar";
-import AreaInsights from "../components/maturity/AreaInsights";
-import AreaDeepDiveTable from "../components/maturity/AreaDeepDiveTable";
+import AreaTabs from "../components/AreaTabs";
+import CategoryTable from "../components/CategoryTable";
+import DashboardGauges from "../components/DashboardGauges";
+import ProgressBar from "../components/ProgressBar";
+import AreaInsights from "../components/AreaInsights";
+import AreaDeepDiveTable from "../components/AreaDeepDiveTable";
 
 export default function MaturityDashboard() {
 

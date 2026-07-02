@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
-import KPICard from "../components/wfm/KPICard";
-import FiltersPanel from "../components/wfm/FiltersPanel";
-import WFMTable from "../components/wfm/WFMTable";
+import KPICard from "../components/KPICard";
+import FiltersPanel from "../components/FiltersPanel";
+import WFMTable from "../components/WFMTable";
 import { buildLeaders, buildKPIs } from "../data/wfmUtils";
 
 const WfmDashboard = () => {

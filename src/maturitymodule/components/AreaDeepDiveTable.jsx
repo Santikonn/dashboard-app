@@ -1,5 +1,5 @@
 import React from "react";
-import { areaDeepDiveData } from "../../data/areaDeepDiveData";
+import { areaDeepDiveData } from "../data/areaDeepDiveData";
 
 export default function AreaDeepDiveTable({ selectedArea }) {
 
